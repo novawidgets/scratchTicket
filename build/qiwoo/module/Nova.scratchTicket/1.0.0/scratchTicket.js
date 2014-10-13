@@ -1,4 +1,14 @@
-(function() {
+(function(root, factory) {
+if(typeof exports === 'object') {
+module.exports = factory();
+} else if(typeof define === 'function' && define.amd) {
+define([], factory);
+} else {
+root['ScratchTicket'] = factory();
+}
+})(this, function() {
+
+
     // 刮刮乐
     function ScratchTicket(config) {
         config = $.extend({
@@ -135,5 +145,5 @@
         }
     });
 
-    this.ScratchTicket = ScratchTicket;
-})();
+    return ScratchTicket;
+});
