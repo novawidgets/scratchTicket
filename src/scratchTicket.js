@@ -79,7 +79,7 @@
                 me.ctx.closePath();
                 var ratio = me.getScratchRatio();
                 if(ratio > me.config.threshold) {
-                    me.$ele.trigger('scatchoff');
+                    me.$ele.trigger('scratchoff');
                 }
                 $body.off('touchmove', move);
                 $body.off('touchend', end);

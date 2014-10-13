@@ -14,6 +14,7 @@
                 -webkit-box-sizing: border-box;
                 box-sizing: border-box;
                 background: #ebebeb;
+                position: relative;
             }
 
             .scratch img {
@@ -48,6 +49,9 @@
             var scratcher = new ScratchTicket({
                 element: '.scratch-ticket',
                 //img: $('.scratch-front')[0]
+            });
+            scratcher.$ele.on('scratchoff', function(e) {
+                alert('恭喜你，中奖啦！');
             });
         </script>
     </body>
