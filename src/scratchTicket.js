@@ -19,21 +19,25 @@
         ctx.strokeStyle = 'black';
         this.ctx = ctx;
 
-        this.init();
+        this._eventEle = $({});
+
+        this._init();
     }
 
     $.extend(ScratchTicket.prototype, {
-        init: function() {
-            this.drawImage();
-            this.bindEvents();
+        _init: function() {
+            this._drawImage();
+            this._bindEvents();
         },
 
-        drawImage: function() {
+        _drawImage: function() {
             var me = this,
                 img = me.config.img,
                 imgEle,
                 width = me.ele.width;
                 height = me.ele.height;
+
+            me.ctx.globalCompositeOperation = "source-over";
 
             if(!img) {
                 me.ctx.fillStyle = me.config.color;
@@ -45,24 +49,26 @@
             if(typeof img === 'string') {
                 imgEle = new Image();
                 imgEle.onload = function() {
-                    me.ctx.drawImage(imgEle, 0, 0, width, height);
+                    me.ctx._drawImage(imgEle, 0, 0, width, height);
+                    me._forceRepaint();
                 }
                 imgEle.src = img;
             }
             else {
                 imgEle = img;
-                me.ctx.drawImage(imgEle, 0, 0, width, height);
+                me.ctx._drawImage(imgEle, 0, 0, width, height);
             }
+            me._forceRepaint();
         },
 
-        bindEvents: function() {
+        _bindEvents: function() {
             var me = this,
                 $body = $('body');
 
             me.$ele.on('touchstart', function(e) {
                 me.offset = me.$ele.offset();
-                var coor = me.getCoors(e);
-                me.scratchLine(coor.x, coor.y, true);
+                var coor = me._getCoors(e);
+                me._scratchLine(coor.x, coor.y, true);
 
                 $body.on('touchmove', move);
                 $body.on('touchend', end);
@@ -71,23 +77,23 @@
 
             function move(e) {
                 e.preventDefault();
-                var coor = me.getCoors(e);
-                me.scratchLine(coor.x, coor.y);
+                var coor = me._getCoors(e);
+                me._scratchLine(coor.x, coor.y);
             }
 
             function end() {
                 me.ctx.closePath();
                 var ratio = me.getScratchRatio();
-                if(ratio > me.config.threshold) {
-                    me.$ele.trigger('scratchoff');
+                if(ratio > me.config.threshold && !me.__scratched) {
+                    me.trigger('scratchoff');
+                    me.__scratched = true;
                 }
                 $body.off('touchmove', move);
                 $body.off('touchend', end);
             }
-
         },
 
-        scratchLine: function(x, y, fresh) {
+        _scratchLine: function(x, y, fresh) {
             if(fresh) {
                 this.ctx.globalCompositeOperation = "destination-out";
                 this.ctx.beginPath();
@@ -98,10 +104,10 @@
 
             // destination-out合成模式在4.1.x手机下有bug，可能导致这时刻不渲染。
             // 因此需要通过改变css强制渲染
-            (this.$ele.css('border-color') === 'red') ? this.$ele.css('border-color', 'black') : this.$ele.css('border-color', 'red');
+            this._forceRepaint();
         },
 
-        getCoors: function(ev) {
+        _getCoors: function(ev) {
             var first, coords = {}, offset = this.offset;
 
             if (first = ev.changedTouches[0]) {
@@ -118,6 +124,10 @@
             };
         },
 
+        _forceRepaint: function() {
+            (this.$ele.css('color') === 'red') ? this.$ele.css('color', 'black') : this.$ele.css('color', 'red');
+        },
+
         getScratchRatio: function() {
             var pixels = this.ctx.getImageData(0, 0, this.ele.width, this.ele.height),
                 pdata = pixels.data,
@@ -132,6 +142,31 @@
             }
 
             return 1 - count / total;
+        },
+
+        refresh: function() {
+            this._drawImage();
+            this.__scratched = false;
+        },
+
+        clear: function() {
+            this.ctx.globalCompositeOperation = "destination-out";
+            this.ctx.fillStyle = 'black';
+            this.ctx.fillRect(0, 0, this.ele.width, this.ele.height);
+            this.__scratched = true;
+            this._forceRepaint();
+        },
+
+        on: function() {
+            this._eventEle.on.apply(this._eventEle, arguments);
+        },
+
+        off: function() {
+            this._eventEle.off.apply(this._eventEle, arguments);
+        },
+
+        trigger: function() {
+            this._eventEle.trigger.apply(this._eventEle, arguments);
         }
     });
 
