@@ -58,15 +58,16 @@ root['ScratchTicket'] = factory();
             // draw image
             if(typeof img === 'string') {
                 imgEle = new Image();
+                imgEle.crossOrigin = '*';
                 imgEle.onload = function() {
-                    me.ctx._drawImage(imgEle, 0, 0, width, height);
+                    me.ctx.drawImage(imgEle, 0, 0, width, height);
                     me._forceRepaint();
                 }
                 imgEle.src = img;
             }
             else {
                 imgEle = img;
-                me.ctx._drawImage(imgEle, 0, 0, width, height);
+                me.ctx.drawImage(imgEle, 0, 0, width, height);
             }
             me._forceRepaint();
         },
