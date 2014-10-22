@@ -41,9 +41,10 @@
 
             me.ctx.globalCompositeOperation = "source-over";
 
+            me.ctx.fillStyle = me.config.color;
+            me.ctx.fillRect(0, 0, width, height);
+
             if(!img) {
-                me.ctx.fillStyle = me.config.color;
-                me.ctx.fillRect(0, 0, width, height);
                 return;
             }
 
