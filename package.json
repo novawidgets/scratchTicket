@@ -1,9 +1,19 @@
 {
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.6.3",
-    "grunt-contrib-concat": "~0.1.1",
-    "grunt-qiwoobuild": "~0.1.3",
-    "grunt-module-transfer": "~0.1.0"
-  }
+  "name": "nova-scratch-ticket",
+  "description": "novaui components",
+  "version": "1.0.1",
+  "author": {},
+  "dependencies": {
+    "gulp": "~3.9.0",
+    "gulp-load-plugins": "~1.0.0-rc.1",
+    "gulp-rename": "~1.2.2",
+    "gulp-nova": "~1.0.0",
+    "gulp-watch": "~4.2.4"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "readmeFilename": "README.md"
 }
